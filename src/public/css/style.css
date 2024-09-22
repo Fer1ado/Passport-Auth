@@ -1,0 +1,51 @@
+.botonera {
+  display: flex;
+  flex-direction: row;
+  padding: 3rem;
+}
+
+.table {
+  max-width: 90%;
+}
+
+button {
+  padding: auto;
+}
+
+.marco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.numeracion {
+  margin-left: 4rem;
+  margin-right: 4rem;
+  align-items: flex-end;
+}
+
+.navbar {
+  margin: 1rem;
+  margin-bottom: 3rem;
+  border-radius: 15px;
+}
+
+.btn-login {
+  font-size: 0.9rem;
+  letter-spacing: 0.05rem;
+  padding: 0.75rem 1rem;
+}
+
+.btn-google {
+  color: white !important;
+  background-color: #ea4335;
+}
+
+.btn-facebook {
+  color: white !important;
+  background-color: #3b5998;
+}
+
+.container {
+    padding: 8rem,
+}
