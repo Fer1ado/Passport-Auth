@@ -1,5 +1,6 @@
 import { userModel } from "../models/user.model.js"
-import  {isValidPassword, createHash } from "../../utils.js"
+import  {isValidPassword, createHash, generateToken } from "../../utils.js"
+import { MongoCartManager } from "./cartManager.js"
 
 class UserDao {
 
@@ -37,21 +38,23 @@ class UserDao {
                 //console.log("🚀 ~ file: userManager.js:27 ~ UserDao ~ createUser ~ userDb:", userDb);
                 return {status: "success", message: "nuevo usuario creado", newUser} 
             } else {
-                console.log("usuario existente")
-                return {status: "failed", message: "mail already exists", existUser} }
+                return {status: "failed", message: "EL CORREO YA EXISTE", existUser} }
             }
         catch (error) {
             //console.log("🚀 ~ file: userManager.js:36 ~ UserDao ~ ESTA ENTRANDO ERROR DE CATCH", error);
-            return { status: "failed", message: error.msg }
+            return { status: "failed", message: error}
         }
     }
 
 
     async login(userLogin) {
+
+        
         try {
             const user = await userModel.findOne({ email: userLogin.email }) 
+            //console.log("🚀 ~ file: userManager.js:53 ~ UserDao ~ login ~ user:", user);
+            
             if (!user) {
-                req.session.user = userLogin.email
                 return { status: "failed", message: "USUARIO NO ENCONTRADO" }
             }
             else {
@@ -59,15 +62,20 @@ class UserDao {
                 //console.log("🚀 ~ file: userManager.js:53 ~ UserDao ~ login ~ passValid:", passValid);
                 
                 if(passValid === false){
-                    return {status: "failed", message: "Contraseña incorrecta"}
+                    return {status: "failed", message: "CONTRASEÑA INCORRECTA"}
                 } else {
-                //console.log("usuario logueado", user)
-                    return { status: "success", message: "USUARIO LOGUEADO", user}
+                
+                const createCart = await MongoCartManager.createCart()
+                const cartObject = createCart.cart._id.toString()   
+                user.cart = cartObject
+                const token = generateToken(user)
+                
+                return {user: user, token: token}
                 }
             }
         } catch (error) {
             console.log("esta entrando este error?")
-            return { status: "failed", message: error.msg }
+            return { status: "failed", message: error }
         }
     }
 

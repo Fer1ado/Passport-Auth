@@ -36,5 +36,16 @@ export const generateToken = (user) => {
         role: user.role
     }
 
-    return jwt.sign(payload, SECRET_KEY, {expiresIn: "15m"})
+    return jwt.sign(payload, process.env.SECRET_KEY, {expiresIn: "15m"})
+}
+
+/*----------------------------default response-------------------------------------------*/
+
+export const createResponse = (req, res, statusCode, data, error=null) => {
+    return res.status(statusCode).json({
+        data,
+        status: statusCode,
+        error,
+        path:req.url,
+    })
 }

@@ -84,22 +84,6 @@ const httpserver = app.listen(PORT, ()=>{
 
 
 
-// RUTA DE TESTING PARA LOGIN
-app.post("/login", (req,res)=>{
-  console.log(req.body)
-  const {username, password} = req.body
-
-  if (username === "admin" && password === "admin"){
-    res.status(200).json({message: "success", session: req.session, id: req.session.id})
-   
-  } else {
-    res.status(401).json({message: "Invalid credentials"})
-  }
-})
-
-
-
-
 //IMPLEMENTACION SOCKET IO
 const io = new Server(httpserver)
 

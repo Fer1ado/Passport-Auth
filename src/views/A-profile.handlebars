@@ -9,9 +9,10 @@
                 <tbody></tbody>
                  
                     <tr>
-                        <h3>Name: {{userSession.passport.user.first_name}} {{userSession.passport.user.last_name}}</h3>
-                        <h4>Email: {{userSession.passport.user.email}}</h4>
-                        <h4>Role: {{userSession.passport.user.role}}</h4>
+                        <h3>Name: {{userSession.user.first_name}} {{userSession.passport.user.last_name}}</h3>
+                        <h4>Email: {{userSession.user.email}}</h4>
+                        <h4>Role: {{userSession.user.role}}</h4>
+                        <h6>Token: {{userSession.token}}</h6>
                     </tr>
                     
               </tbody>

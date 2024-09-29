@@ -23,8 +23,12 @@ const userSchema = new Schema({
         type: String,
         enum: ['admin', 'user'],
         default: 'user'
+    },
+    cart:{ 
+        type: Schema.Types.ObjectId,
+        ref: "carts",
+        default: null  // Por defecto el usuario no tiene carrito asociado
     }
-
 })
 
 export const userModel = model('users', userSchema)

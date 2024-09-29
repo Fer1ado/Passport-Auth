@@ -1,132 +1,27 @@
 import { Router } from "express";
-import { MongoCartManager } from "../Controller/Manager/cartManager.js";
+import * as controller from "../Controller/cart.controller.js"
 
 const cartRoute = Router();
 
+/// lista todos los carritos registrados en la BD
+cartRoute.get("/", async(req, res, next)=>{ controller.listAllCarts(req, res, next) })
 
-cartRoute.get("/:cid", async(req, res, next)=>{
-    const cid = req.params.cid
-    const response = await MongoCartManager.getCarrito(cid)
+/// lista un carrito en particular por ID
+cartRoute.get("/:cid", async(req, res, next)=>{ controller.getCartById(req, res, next) })
 
-    try {
-        if(response.status === "success"){
-            res.status(200).send(response)
-        } if(response.status === "failed"){
-            res.status(404).send(response)   
-        }} 
-    catch (error) {
-    next(error)
-    }
-})
+/// crea un nuevo carrito en la BD
+cartRoute.post("/",async (req, res) => { controller.createCart(req,res) })
 
-cartRoute.get("/", async(req, res, next)=>{
-    const cid = req.params.cid
-    const response = await MongoCartManager.findAll(cid)
-    
-    try {
-        if(response.status === "success"){
-            res.status(200).send(response)
-        } if(response.status === "failed"){
-            res.status(404).send(response)   
-    }} 
-    catch (error) {
-    next(error)
-    }
-})
+/// agrega un producto al carrito o actualiza cantidades de producto ya agregado
+cartRoute.post("/:cid/product/:pid",async (req, res, next) => { controller.addAndUpdateCart(req,res,next) })
 
-cartRoute.post("/",async (req, res) => {
-    const response = res.status(201).send(await MongoCartManager.createCart());
+/// actualiza un carrito en la BD pero cargando varios productos y varias cantdiades via array en body
+cartRoute.put("/:cid",async (req, res, next) => { controller.addAndUpdateCartViaArray(req,res,next) })
 
-    if(response.status === "success"){
-        res.status(201).send(response)
-      } else{res.status(500).send(response)
-    }
-})
+/// elimina un producto del carrito
+cartRoute.delete("/:cid/product/:pid",async (req, res, next) => { controller.deleteProductInCartById(req,res,next) })
 
-
-cartRoute.post("/:cid/product/:pid",async (req, res, next) => {
-    const pid = req.params.pid;
-    const cid = req.params.cid
-    const quantity = req.body.quantity;
-    const response = await MongoCartManager.addAndUpdateCart(cid,pid, quantity)
-
-    try{
-        if(response.status === "success"){
-        res.status(201).send(response)
-        } if(response.status === "failed"){
-        res.status(404).send(response)
-        }} 
-    catch(error){
-    next(error)
-    }
-
-})
-
-cartRoute.put("/:cid/product/:pid",async (req, res, next) => {
-    const pid = req.params.pid;
-    const cid = req.params.cid
-    const quantity = req.body.quantity;
-    const response = await MongoCartManager.addAndUpdateCart(cid,pid, quantity)
-
-    try{
-        if(response.status === "success"){
-            res.status(201).send(response)
-        } if(response.status === "failed"){
-            res.status(404).send(response)
-        }} 
-    catch(error){
-    next(error)
-    }
-})
-
-cartRoute.delete("/:cid/product/:pid",async (req, res, next) => {
-    const pid = req.params.pid;
-    const cid = req.params.cid
-    const quantity = req.body.quantity;
-    const response = await MongoCartManager.deleteProductById(cid,pid, quantity)
-
-    try{
-        if(response.status === "success"){
-            res.status(200).send(response)
-        } if(response.status === "failed"){
-            res.status(404).send(response)
-        }} 
-    catch(error){
-    next(error)
-    }
-})
-
-cartRoute.put("/:cid",async (req, res, next) => {
-    const cid = req.params.cid
-    const array = req.body;
-    const response = await MongoCartManager.updateCartWithProducts(cid,array)
-
-    try{
-        if(response.status === "success"){
-            res.status(200).send(response)
-        } if(response.status === "failed"){
-            res.status(404).send(response)
-        }} 
-    catch(error){
-    next(error)
-    }
-})
-
-
-cartRoute.delete("/:cid", async(req, res, next)=>{
-    const cid = req.params.cid
-    response = await MongoCartManager.deleteCart(cid)
-    
-    try{
-        if(response.status === "success"){
-            res.status(200).send(response)
-        } if(response.status === "failed"){
-            res.status(404).send(response)
-        }} 
-    catch(error){
-    next(error)
-    }
-})
-
+/// elimina un carrito completo de la BD por ID
+cartRoute.delete("/:cid", async(req, res, next)=>{ controller.deleteCartById(req,res,next) })
 
 export default cartRoute
