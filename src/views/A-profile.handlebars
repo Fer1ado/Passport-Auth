@@ -9,9 +9,9 @@
                 <tbody></tbody>
                  
                     <tr>
-                        <h3>Name: {{userDb.user}}</h3>
-                        <h4>Email: {{userDb.email}}</h4>
-                        <h4>Role: {{userDb.role}}</h4>
+                        <h3>Name: {{userSession.passport.user.first_name}} {{userSession.passport.user.last_name}}</h3>
+                        <h4>Email: {{userSession.passport.user.email}}</h4>
+                        <h4>Role: {{userSession.passport.user.role}}</h4>
                     </tr>
                     
               </tbody>

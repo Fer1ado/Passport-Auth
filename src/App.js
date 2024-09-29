@@ -5,13 +5,16 @@ import handlebars from "express-handlebars";
 import path from "path"
 import {Server} from "socket.io"
 import displayRoutes from 'express-routemap';
-import { errorHandler } from './middleware/error.lander.middleware.js';
+import { errorHandler } from './middleware/error.hander.middleware.js';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import MongoStore from "connect-mongo"
 import passport from "passport"
-import "./passport/local-strategy.js"
 
+import "./passport/local-strategy.js"
+import "./passport/github-strategy.js"
+import "./passport/google-strategy.js"
+import "./passport/jwt-strategy.js"
 
 
 //importación de rutas

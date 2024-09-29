@@ -2,6 +2,8 @@ import { Router } from "express";
 import { MongoCartManager } from "../Controller/Manager/cartManager.js"
 import {productModel} from "../Controller/models/product.model.js"
 import { cartModel } from "../Controller/models/cart.model.js";
+import { isAuth } from "../middleware/Auth.handler.middleware.js";
+
 
 
 const viewsRoute = Router()
@@ -16,10 +18,10 @@ viewsRoute.get("/login", (req, res) => {
   res.render("A-login",{sessionInfo})
 })
 
-viewsRoute.get("/user/profile", (req, res) => {
-  const userDb = req.session
- // console.log("🚀 ~ file: views.routes.js:21 ~ viewsRoute.get ~ userDb:", userDb);
-  res.render("A-profile",{userDb})
+viewsRoute.get("/user/profile", isAuth, (req, res) => {
+  const userSession = req.session 
+  //console.log("🚀 ~ file: views.routes.js:21 ~ viewsRoute.get ~ userDb:", userDb);
+  res.render("A-profile",{userSession})
 })
 
 viewsRoute.get("/loginError", (req, res) => {
@@ -43,7 +45,7 @@ viewsRoute.get("/realtimeproducts", (req, res) => {
   })  
 
   // vista de productos en handlebars con boton comprar
-viewsRoute.get("/products", async (req, res) => {
+viewsRoute.get("/products", isAuth, async (req, res) => {
     const { page = 1, limit = 20 , sort , filter = true} = req.query
     try {
 

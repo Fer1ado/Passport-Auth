@@ -8,7 +8,6 @@ class UserDao {
             const finduser = await userModel.findOne({email:email})
             //console.log("🚀 ~ file: userManager.js:8 ~ UserDao ~ existUser ~ finduser:", finduser);
             return finduser
-            
         } catch (error) {
             return { status: "failed", message: error.msg } 
         }
@@ -19,7 +18,6 @@ class UserDao {
             const finduser = await userModel.findById({id})
             //console.log("🚀 ~ file: userManager.js:8 ~ UserDao ~ existUser ~ finduser:", finduser);
             return finduser
-            
         } catch (error) {
             return { status: "failed", message: error.msg } 
         }
@@ -29,6 +27,7 @@ class UserDao {
         
         try {
             const existUser = await this.existUser(user.email)
+            //console.log("🚀 ~ file: userManager.js:32 ~ UserDao ~ createUser ~ existUser:", existUser);
 
             if(!existUser){
                 //console.log("🚀 ~ file: userManager.js:24 ~ UserDao ~ createUser ~ existUser: creando user", existUser);
@@ -37,7 +36,6 @@ class UserDao {
                 const newUser = await userModel.create(userDb)
                 //console.log("🚀 ~ file: userManager.js:27 ~ UserDao ~ createUser ~ userDb:", userDb);
                 return {status: "success", message: "nuevo usuario creado", newUser} 
-
             } else {
                 console.log("usuario existente")
                 return {status: "failed", message: "mail already exists", existUser} }
@@ -51,8 +49,7 @@ class UserDao {
 
     async login(userLogin) {
         try {
-            const user = await userModel.findOne({ email: userLogin.email })
-            
+            const user = await userModel.findOne({ email: userLogin.email }) 
             if (!user) {
                 req.session.user = userLogin.email
                 return { status: "failed", message: "USUARIO NO ENCONTRADO" }
@@ -73,7 +70,6 @@ class UserDao {
             return { status: "failed", message: error.msg }
         }
     }
-
 
 }
 
