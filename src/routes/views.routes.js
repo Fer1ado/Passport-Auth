@@ -10,8 +10,6 @@ viewsRoute.get("/register", (req, res) => {
 
 viewsRoute.get("/login", (req, res) => {
   const sessionInfo = req.session.messages
-  //console.log("🚀 ~ file: views.routes.js:18 ~ viewsRoute.get ~ sessionInfo:", sessionInfo);
-
   res.render("A-login",{sessionInfo})
 })
 
