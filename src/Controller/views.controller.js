@@ -7,6 +7,30 @@ import { isAuth } from "../middleware/Auth.handler.middleware.js";
 
 
 
+export const register = async (req, res) => {res.render("A-register",{})}
+
+export const login = async (req, res) => {
+    const sessionInfo = req.session.messages
+    res.render("A-login",{sessionInfo})
+}
+
+export const profile =  (req, res) => {
+    const userSession = req.session
+    res.render("A-profile",{userSession})
+}
+
+export const loginError = (req, res) => {
+    const failureMessage = req.session.messages
+    res.render("A-loginError",{failureMessage})
+}
+
+export const realtimeproducts = (req, res) => {
+    res.render ("realtimeproducts", {
+    js:"rtprod.js",
+    css:"style.css"
+    } )
+}
+
 
 
 

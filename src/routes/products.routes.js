@@ -5,22 +5,22 @@ const prodRoute = Router();
 
 
 //pedido de productos por ID
-prodRoute.get("/:pid", (req, res, next) => { controller.getProductById(req,res,next) });
+prodRoute.get("/:pid", controller.getProductById);
 
 // Busqueda de Products con paginate y filtro
-prodRoute.get("/", async (req, res, next)=>{ controller.getAllProducts(req,res,next)})
+prodRoute.get("/",  controller.getAllProducts)
 
 //Subida de productos
-prodRoute.post("/", async (req, res, next) => { controller.addProduct(req, res, next) });
+prodRoute.post("/", controller.addProduct);
 
 //editado de producto
-prodRoute.put("/:id", async (req, res, next) => { controller.updateProductbyId(req,res.next) });
+prodRoute.put("/:id", controller.updateProductbyId);
 
 //borrado de producto
-prodRoute.delete("/:id", async (req, res, next) => { controller.deleteProductById(req, res.next) });
+prodRoute.delete("/:id", controller.deleteProductById);
 
 //////////// **** comando de inicializacion de db
-prodRoute.post("/many", async (req, res) => { controller.populateDb(req,res) });
+prodRoute.post("/many", controller.populateDb);
 
 
 export default prodRoute;

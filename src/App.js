@@ -50,8 +50,6 @@ const sessionConfig = {
     maxAge: 1800 * 100 // se detalla en milisegundos (5min)
 }}
 
-
-
 /// CONEXION A MONGO DB
 mongoose.connect(process.env.DB_CNN || "mongodb://localhost:27017/coderhouse")
     .then(() => console.log('Conectado a Mongo Exitosamente'))
@@ -73,50 +71,10 @@ app.use("/static", express.static(_dirname + "/public"))
 app.use("/products", express.static(_dirname + "/public"))
 app.use('/realtimeproducts', express.static(path.join(_dirname, '/public')))
 
-
-
-
 // SETEO DE PUERTO
 const httpserver = app.listen(PORT, ()=>{
   displayRoutes(app)
   console.log(`Server listening on port ${PORT}`)
-})
-
-
-
-//IMPLEMENTACION SOCKET IO
-const io = new Server(httpserver)
-
-import { MongoProductManager } from './Controller/Manager/productManager.js';
-
-
-
-io.on('connection', (socket)=> {
-  console.log('servidor de socket io conectado')
-  // socket de realtimeproducts
-  socket.on('nuevoProducto', async (nuevoProd) => {
-      const {title, description,category, thumbnail, price, stock, code} = nuevoProd
-      const response = await MongoProductManager.addProduct({title: title, description: description, price: price, category: category, thumbnail: thumbnail, price: price, stock: stock, code: code})
-      console.log(response)
-      const products = await MongoProductManager.getProducts()
-      socket.emit('products-data', products)
-      socket.emit("status-changed", response)
-  })
-
-  socket.on('update-products', async () => {
-      const products = await MongoProductManager.getProducts();
-      socket.emit('products-data', products);
-  });
-
-  socket.on('remove-product', async (prodID) => {
-      console.log("inicio remove socket")
-      const result = await MongoProductManager.deleteProduct(prodID) 
-      socket.emit("status-changed", result)
-      const products = await MongoProductManager.getProducts()
-      socket.emit('products-data', products)
-      console.log("fin remove socket")
-  })
-
 })
 
 // CONFIG HANDLEBARS

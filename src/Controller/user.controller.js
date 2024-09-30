@@ -1,5 +1,6 @@
 
 import { userManager } from "./Manager/userManager.js"; 
+import passport from "passport";
 
 export const register = async (req, res, next) => {
     try {
@@ -41,5 +42,23 @@ export const profile = async (req, res, next) => {
     } 
 };
 
+export const logout = async (req, res, next) => {
+    try {
+         //console.log(req.session)
+        req.logout((err) => {
+            if(err) return res.send(err)
+            res.redirect("/login")
+        //console.log(req.session)
+        })
+    } catch (error) {
+        next(error);
+    }
+}
 
 
+export const githubReg = ()=>{ passport.authenticate("github",{scope:["user:email"]})}
+export const githubAuth = ()=>{ passport.authenticate("github",{failureRedirect: '/loginError', successRedirect: "/user/profile", passReqToCallback: true, failureMessage: true}), async (req, res) => {res.redirect("/")}}
+
+
+export const googleReg = () =>{ passport.authenticate("google", {scope:["profile"]})}
+export const googleAuth = ()=>{ passport.authenticate("google", {assignProperty: "user", successRedirect: "/user/profile", failureRedirect: "/loginError", passReqToCallback: true}), async (req, res) => {res.redirect("/user/profile")}}
