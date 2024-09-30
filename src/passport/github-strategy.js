@@ -11,7 +11,7 @@ const strategyConfig = {
 };
 
 const registerOrLogin = async (accesToken, refreshToken, profile, done) => {
-
+    
     try {
         //console.log("🚀 ~ file: github-strategy.js:14 ~ registerOrLogin ~ profile:", profile);
         const email = profile._json.email !== null ? profile._json.email : profile._json.blog
@@ -33,7 +33,6 @@ const registerOrLogin = async (accesToken, refreshToken, profile, done) => {
         return done(null, error, {message: "error al procesar el alta de usuario"})
     }
 }
-
 
 
 passport.use("github", new GithubStrategy(strategyConfig, registerOrLogin));
