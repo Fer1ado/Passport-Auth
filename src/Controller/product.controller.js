@@ -15,8 +15,6 @@ export const getProductById = async (req, res, next) => {
         }
 }
 
-
-
 // Busqueda de Products con paginate y filtro
 export const getAllProducts =  async (req, res, next)=>{
     const { limit = 3 , page = 1, filter = true, sort = "1" } = req.query;
@@ -31,7 +29,6 @@ export const getAllProducts =  async (req, res, next)=>{
             next(error)
         }
 }
-
 
 //Subida de productos
 export const addProduct = async (req, res, next) => {
@@ -65,7 +62,6 @@ export const updateProductbyId = async (req, res, next) => {
         } catch(error){
             next(error)
         }
-
 };
 
 //borrado de producto

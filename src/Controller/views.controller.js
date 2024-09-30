@@ -1,37 +1,31 @@
-import { Router } from "express";
-import { passportCall } from "../middleware/passportCall.middleware.js";
 import { MongoCartManager } from "../Controller/Manager/cartManager.js"
 import { productModel } from "../Controller/models/product.model.js"
 import { cartModel } from "../Controller/models/cart.model.js";
-import { isAuth } from "../middleware/Auth.handler.middleware.js";
 
 
-
-export const register = async (req, res) => {res.render("A-register",{})}
+export const register = async (req, res) => { res.render("A-register", {}) }
 
 export const login = async (req, res) => {
     const sessionInfo = req.session.messages
-    res.render("A-login",{sessionInfo})
+    res.render("A-login", { sessionInfo })
 }
 
-export const profile =  (req, res) => {
+export const profile = async (req, res) => {
     const userSession = req.session
-    res.render("A-profile",{userSession})
+    res.render("A-profile", { userSession })
 }
 
-export const loginError = (req, res) => {
+export const loginError = async (req, res) => {
     const failureMessage = req.session.messages
-    res.render("A-loginError",{failureMessage})
+    res.render("A-loginError", { failureMessage })
 }
 
-export const realtimeproducts = (req, res) => {
-    res.render ("realtimeproducts", {
-    js:"rtprod.js",
-    css:"style.css"
-    } )
+export const realtimeproducts = async (req, res) => {
+    res.render("realtimeproducts", {
+        js: "rtprod.js",
+        css: "style.css"
+    })
 }
-
-
 
 
 // vista de productos en handlebars con boton comprar
@@ -46,20 +40,18 @@ export const vistaProducts = async (req, res) => {
         }
 
         const sorting = sortTogle(sort)
-
         const response = await productModel.paginate({ status: filter }, { limit: limit, page: page, sort: { price: sorting } })
-
         if (page > response.totalPages) {
             return res.json({ status: "failed", message: "LA PAGINA SELECCIONADA NO EXISTE" })
         }
+        const cart = req.session.user.cart
 
-        const cart = await cartModel.create({})
 
         //Convierto la query de mongo a un objeto javascript plano para que lo pueda leer Handlebars
         const products = response.docs.map(doc => {
             return {
                 id: doc._id,
-                cart: cart._id,
+                cart: cart,
                 title: doc.title,
                 description: doc.description,
                 category: doc.category,
@@ -84,7 +76,6 @@ export const vistaProducts = async (req, res) => {
             nextLink: `?page=${response.nextPage}`,
         })
 
-
     } catch (error) {
         return res.status(400).json({ status: "failed", error: error.message })
     }
@@ -94,7 +85,7 @@ export const vistaProducts = async (req, res) => {
 export const vistaCart = async (req, res) => {
     try {
         const pid = req.params.pid;
-        const cid = req.params.cid
+        const cid = req.session.user.cart
         const response = await MongoCartManager.addAndUpdateCart(cid, pid, 1)
         const cart = await cartModel.find({ _id: cid }).populate("products.product", { title: 1, price: 1, stock: 1, code: 1, description: 1 });
 
@@ -106,13 +97,47 @@ export const vistaCart = async (req, res) => {
                 price: item.product.price,
                 title: item.product.title,
                 description: item.product.description,
+                cid: cid,
             }
         })
 
+        res.redirect(`/products/api/cart/${cid}`)
+
+    } catch (error) {
+        return res.status(400).json({ status: "failed", error: error.message })
+    }
+}
+
+
+export const vistaDeleteItem = async (req, res) => {
+    const pid = req.params.pid;
+    const cid = req.session.user.cart
+
+    try {
+        const response = await MongoCartManager.deleteProductById(cid, pid, 1)
+        //console.log("🚀 ~ file: views.controller.js:132 ~ vistaDeleteCart ~ response:", response);
+
+        const cart = await cartModel.find({ _id: cid }).populate("products.product", { title: 1, price: 1, stock: 1, code: 1, description: 1 });
+        if (!cart) {
+            return res.render("cart", {
+                cart: cid,
+                item: cartDel,
+            })
+        }
+        //convierto ojbjeto mongoose a javascript plano
+        const cartDel = cart[0].products.map(item => {
+            return {
+                id: item.product._id,
+                quantity: item.quantity,
+                price: item.product.price,
+                title: item.product.title,
+                description: item.product.description,
+                cart: cid
+            }
+        })
         res.render("cart", {
             cart: cid,
-            item: cartUp,
-            deleteBtn: "btn btn-outline-primary disabled"
+            item: cartDel,
         })
 
     } catch (error) {
@@ -121,10 +146,27 @@ export const vistaCart = async (req, res) => {
 }
 
 export const vistaDeleteCart = async (req, res) => {
+    const cid = req.session.user.cart
+    console.log("INICIA LA VISTA DELETECART")
     try {
-        const pid = req.params.pid;
-        const cid = req.params.cid
-        const response = await MongoCartManager.deleteProductById(cid, pid, 1)
+        const response = await MongoCartManager.deleteCart(cid)
+        const newCart = await MongoCartManager.createCart()
+        req.session.user.cart = newCart.cart._id.toString()
+        
+        //console.log(`Item que se esta eliminando ${cartDel}`)
+        res.render("cart", {
+            cart: cid,
+        })
+    } catch (error) {
+        return res.status(400).json({ status: "failed", error: error.message })
+    }
+
+}
+
+//Vista de carrito con ruta GET
+export const vistaCartId = async (req, res) => {
+    try {
+        const cid = req.session.user.cart
         const cart = await cartModel.find({ _id: cid }).populate("products.product", { title: 1, price: 1, stock: 1, code: 1, description: 1 });
 
         //convierto ojbjeto mongoose a javascript plano
@@ -135,42 +177,13 @@ export const vistaDeleteCart = async (req, res) => {
                 price: item.product.price,
                 title: item.product.title,
                 description: item.product.description,
+                cart: cid
             }
         })
-
-        //console.log(`Item que se esta eliminando ${cartDel}`)
 
         res.render("cart", {
             cart: cid,
             item: cartDel,
-
-        })
-
-    } catch (error) {
-        return res.status(400).json({ status: "failed", error: error.message })
-    }
-}
-
-//Vista de carrito con ruta GET
-export const vistaCartId = async (req, res) => {
-    try {
-        const cid = req.params.cid
-        const cart = await cartModel.find({ _id: cid }).populate("products.product", { title: 1, price: 1, stock: 1, code: 1, description: 1 });
-
-        //convierto ojbjeto mongoose a javascript plano
-        const cartUp = cart[0].products.map(item => {
-            return {
-                id: item.product._id,
-                quantity: item.quantity,
-                price: item.product.price,
-                title: item.product.title,
-                description: item.product.description,
-            }
-        })
-
-        res.render("cart", {
-            cart: cid,
-            item: cartUp,
         })
 
     } catch (error) {

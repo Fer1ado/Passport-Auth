@@ -143,7 +143,7 @@ class ProductDAO {
                 const edit = await productModel.findByIdAndUpdate(id, updateData, { new: true });
                 return {status: "success", message:"producto editado con exito", productoActualizado: edit }
             }
-      
+
         }catch(err){
             return {status: "failed", message: err.message}
         }

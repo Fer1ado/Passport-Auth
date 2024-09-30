@@ -24,10 +24,13 @@ viewsRoute.get("/products", passportCall('jwtCookies'), controller.vistaProducts
 viewsRoute.post("/products/api/cart/:cid/product/:pid", passportCall('jwtCookies'), controller.vistaCart)
 
 //Vista de carrito con ruta GET
-viewsRoute.get("/products/api/cart/:cid/product/delete/:pid", passportCall('jwtCookies'), controller.vistaDeleteCart)
+viewsRoute.get("/products/api/cart/:cid/product/delete/:pid", passportCall('jwtCookies'), controller.vistaDeleteItem)
+
+//Vista borrado carro completo
+viewsRoute.post("/products/api/cart/delete/:cid", passportCall('jwtCookies'), controller.vistaDeleteCart)
 
 //Vista de carrito con id
-viewsRoute.get("/cart/:cid", controller.vistaCartId) 
+viewsRoute.get("/products/api/cart/:cid", passportCall('jwtCookies'), controller.vistaCartId) 
 
 
 export default viewsRoute;

@@ -36,7 +36,6 @@ export const createCart = async (req, res, next) => {
         }
 }
 
-
 export const addAndUpdateCart = async (req, res, next) => {
     const pid = req.params.pid;
     const cid = req.params.cid
@@ -51,7 +50,6 @@ export const addAndUpdateCart = async (req, res, next) => {
         catch(error){
         next(error)
         }
-
 }
 
 export const addAndUpdateCartViaArray = async (req, res, next) => {
@@ -68,7 +66,6 @@ export const addAndUpdateCartViaArray = async (req, res, next) => {
         next(error)
         }
 }
-
 
 export const deleteProductInCartById = async (req, res, next) => {
     const pid = req.params.pid;

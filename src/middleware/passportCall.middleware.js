@@ -6,7 +6,8 @@ export const passportCall = (strategy) => {
             if(err){
                 return next(err)
             }if(!user){
-                return res.status(401).json({error: info.messages ? info.messages : info.toString()}) 
+                req.session.messages = "Tu sesion expiró, necesitas loguearte para poder navegar"
+                return res.redirect("/Login")
             }
             req.user = user
             next()

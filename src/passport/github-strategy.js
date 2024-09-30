@@ -14,8 +14,6 @@ const registerOrLogin = async (accesToken, refreshToken, profile, done) => {
 
     try {
         //console.log("🚀 ~ file: github-strategy.js:14 ~ registerOrLogin ~ profile:", profile);
-        //console.log(profile._json.email)
-
         const email = profile._json.email !== null ? profile._json.email : profile._json.blog
         const userDb  = await userManager.existUser(email)
         if (userDb) return done(null, userDb)
@@ -28,9 +26,7 @@ const registerOrLogin = async (accesToken, refreshToken, profile, done) => {
             role: "user",
         }
         //console.log("🚀 ~ file: github-strategy.js:30 ~ registerOrLogin ~ newUser:", newUser);
-
         const registerUser =  await userManager.createUser(newUser)
-        
         return done(null, registerUser)
 
     } catch (error) {

@@ -11,10 +11,15 @@
             <li class="list-group-item"><h5>Cantidad: {{this.quantity}}</h5></li>
             <li class="list-group-item">Price: $-{{this.price}}</li>
             <li class="list-group-item">Description: {{this.description}}</li>
-            <td><form action="delete/{{this.id}}"  method="get" ><button class="btn btn-outline-primary" role="button" name="foo" id="delete" value="Borrar del carrito" > Borrar </button></form></td>
+            <td><form action="/products/api/cart/{{this.cart}}/product/delete/{{this.id}}"  method="get" ><button class="btn btn-outline-primary" role="button" name="foo" id="delete" value="Borrar del carrito" > Borrar </button></form></td>
             </ul>
         {{/each}}
-        
+        <br>
+        <br>
+        <td><form action="/products/api/cart/delete/{{this.cart}}"  method="post" ><button class="btn btn-outline-danger" role="button" name="foo" id="delete" value="Borrar del carrito" > Borrar todos </button></form></td>
+        <br>
+        <br>
+        <td><form action="/products"  method="get" ><button class="btn btn-outline-success" role="button" name="foo" id="delete" value="Borrar del carrito" > SEGUIR COMPRANDO </button></form></td>
     </div>
 </body>
 
